@@ -16,39 +16,102 @@ Detecting objects is a critical task in computer vision. It's used in a variety 
 - Anomaly detection
 
 Of course, this isn't a comprehensive list, but it does include some of the most important ways that object detection is influencing our future.
+## 3. Installation
+### DOCKER
+#### How to build docker image from root folder of the project (you can pass it)
+```cmd
+# Build
+docker build -f docker/Dockerfile -t romandevyatov/people_detection:latest .
 
-## 3. How to use this repo built for Person Detection without Docker?
-1. Create a new virtual environment ( Using `python -m venv venv` or `conda create -n person_detection python=3.8.6` )
-2. Activate the virtual environment ( `source venv/bin/activate` or `conda activate person_detection` )
-3. Install tensorflow 2 ( `pip install tensorflow==2` or `conda install -c conda-forge tensorflow` )
-4. Install opencv ( `pip install opencv-python` or `conda install -c conda-forge opencv` )
-5. Install numpy ( `pip install numpy` or `conda install -c conda-forge numpy` )
-6. Install matplotlib ( `pip install matplotlib` or `conda install -c conda-forge matplotlib` ) - Optional
-7. Install logging ( `pip install logging`)
-8. Install argparse ( `pip install argparse` or `conda install -c conda-forge argparse` )
-9. Clone this repo ( `git clone https://github.com/swapnilvishwakarma/Person_Detection.git` )
-10. Go to the `Person_Detection` directory ( `cd Person_Detection` )
-11. Run the `python main.py --help` to see the usage of the program
-12. Pass the required arguments to run the program accordingly.
+# Push it to image repository
+docker push romandevyatov/people_detection:latest
+```
+#### How to run the docker container
+```cmd
+# Pull the image
+docker pull romandevyatov/people_detection:latest
 
-## 4. How to use this repo built for Person Detection with Docker?
-1. Download the Dockerfile from this repo ( `git clone https://github.com/swapnilvishwakarma/Person_Detection.git` ) - Note: It uses tensorflow docker image which is compatible with arm64 architecture only, i.e. for M1 based Macs.
-2. Go to the `Person_Detection` directory ( `cd Person_Detection` )
-3. Build the docker image ( `docker build -t person_detection .` )
-4. Run the docker image ( `docker run -it -p 8080:8080 -v $(pwd):/home/ubuntu/Person_Detection person_detection` )
-5. You can add required arguments after the docker run command to run the program accordingly.
+# Run container
+# 1 way (recommended)
+docker run -it --rm -d romandevyatov/people_detection:latest
 
-## 5. Want some demo?
+# 2 way with volume (you can use it to transfer some files into docker container from main system)
+## For windows user
+docker run -it --rm -d -v /mnt/c/Users/<your_username>/<some_created_folder_on_your_computer>:/shared_folder romandevyatov/people_detection:latest
+## For Linux user
+docker run -it --rm -d -v /home/<your_username>/<some_created_folder_on_your_computer>:/shared_folder romandevyatov/people_detection:latest
+
+
+# Show running docker containers
+docker ps
+
+# Go inside the container
+docker exec -it <container_id> bash
+```
+
+### Inside the container
+#### Run the run script (it will do it all automatically)
+```cmd
+sh run.sh
+```
+
+This  [script](https://github.com/RomanDevyatov/Person_Detection/blob/main/run.sh)
+1) Clones repository
+2) Runs python main.py
+3) Compares [prepared image](https://github.com/RomanDevyatov/Person_Detection/blob/main/results/expected_image/expected_img1.jpg) by SSIM
+
+#### Exit the container
+```cmd
+exit
+```
+
+### Shut down the container
+```cmd
+docker stop -t 60 <container_id>
+```
+
+### Remove container
+```cmd
+docker rm <container_id>
+```
+
+### Remove image 
+```cmd
+# Get image id
+docker images -a
+docker rmi <image_id>
+```
+
+### How to run it without Docker and script file?
+1. Create a new virtual environment using conda:
+```cmd
+conda create env -f environment.yml
+```
+2. Run following code line by line
+```cmd
+git clone https://github.com/RomanDevyatov/Person_Detection.git
+
+cd Person_Detection
+
+python3 main.py -i ./test_images/img1.jpg
+
+# Comparing
+python3 compare.py ./results/expected_image/expected_img1.jpg ./results/prepared_img1.jpg
+
+python3 compare.py ./results/prepared_img1.jpg ./test_images/img2.jpg
+```
+
+## 3. DEMO?
 #### Model output from an image:
 
 <p align="center"> 
-    <img src='https://github.com/swapnilvishwakarma/Person_Detection/blob/main/assets/Img.png'>
+    <img src='https://github.com/RomanDevyatov/Person_Detection/blob/main/assets/img_demo.png'>
 </p>
 
 #### Model output from a video:
 
 <p align="center"> 
-    <img src="https://github.com/swapnilvishwakarma/Person_Detection/blob/main/assets/Vid.png">
+    <img src="https://github.com/RomanDevyatov/Person_Detection/blob/main/assets/vid_demo.png">
 </p>
 
 #### Simply pass 0 for the video argument to run the person detection model using your webcam.

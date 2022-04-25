@@ -6,6 +6,14 @@ import logging
 np.random.seed(123)
 
 
+logger = logging.getLogger(__name__)
+
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", datefmt="%d-%m-%Y %H:%M:%S")
+handler = logging.FileHandler(filename='logs/person_detection_logs.log')
+handler.setFormatter(formatter)
+logger.setLevel(logging.DEBUG)
+logger.addHandler(handler)
+
 class Detector:
     def __init__(self) -> None:
         pass
@@ -52,13 +60,6 @@ class Detector:
                     classLabelText = self.classesList[classIndex].upper()
                     classColor = self.colorsList[classIndex]
 
-                    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", datefmt="%d-%m-%Y %H:%M:%S")
-                    handler = logging.FileHandler(filename='logs/person_detection_logs.log')
-                    handler.setFormatter(formatter)
-                    logger = logging.getLogger()
-                    logger.setLevel(logging.DEBUG)
-                    logger.addHandler(handler)
-
                     displayText = '{} {:.2f}%'.format(classLabelText, classConfidence)
                     ymin, xmin, ymax, xmax = bbox
                     xmin, xmax, ymin, ymax = (xmin * imW, xmax * imW, ymin * imH, ymax * imH)
@@ -86,10 +87,16 @@ class Detector:
         image = cv2.imread(imagePath)
 
         bboxImage = self.createBoundingBox(image, threshold)
-        cv2.imwrite(self.modelName + ".jpg", bboxImage)
-        cv2.imshow("Result", image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        new_name = "prepared_" + imagePath.rsplit("/")[-1]
+        path = os.path.join("results", new_name)
+        res = cv2.imwrite(path, bboxImage)
+        if res:
+            logger.info("file is written to " + str(path))
+        else:
+            logger.info("didn't safe")
+        # pyplot.imshow("Result", image)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
 
     def predictVideo(self, videoPath, threshold=0.5):
         cap = cv2.VideoCapture(videoPath)
@@ -107,7 +114,7 @@ class Detector:
 
             bboxImage = self.createBoundingBox(image, threshold)
             cv2.putText(bboxImage, "FPS: " + str(int(fps)), (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 2)
-            cv2.imshow("Result", bboxImage)
+            # cv2.imshow("Result", bboxImage)
             
             key = cv2.waitKey(1) & 0xFF
             if key == ord('q'):

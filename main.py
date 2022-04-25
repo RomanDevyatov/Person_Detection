@@ -2,6 +2,7 @@ from detector import *
 import argparse
 import logging
 
+
 # model_URL = "http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_mobilenet_v2_320x320_coco17_tpu-8.tar.gz" # ssd_mobilenet_v2_coco_2018_03_29 for quick predictions with compromised accuracy
 # model_URL = "http://download.tensorflow.org/models/object_detection/tf2/20200711/efficientdet_d6_coco17_tpu-32.tar.gz" # EfficientDet D6 for better predictions with compromised speed
 # model_URL = "http://download.tensorflow.org/models/object_detection/tf2/20200711/efficientdet_d5_coco17_tpu-32.tar.gz" # EfficientDet D5 for better predictions with compromised speed
@@ -52,3 +53,6 @@ if __name__ == "__main__":
         detector.predictVideo(videoPath, threshold)
     else:
         print("Please specify image or video path, or 0 for web-cam. Use -h for help")
+
+
+
