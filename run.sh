@@ -18,4 +18,4 @@ python3 compare.py ./results/expected_image/expected_img1.jpg ./results/prepared
 printf "\nComparing with img2.jpg (the same dimensions):"
 python3 compare.py ./results/prepared_${NAME_FILE} ./test_images/img2.jpg
 
-printf "\nFinished!"
+printf "\nFinished!\n"
